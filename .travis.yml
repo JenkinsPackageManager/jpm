@@ -1,0 +1,8 @@
+dist: trusty
+language: go
+go:
+- "1.10"
+
+script:
+- cd util; go install; cd ..
+- cd cmd/jpm; go install; cd ../..

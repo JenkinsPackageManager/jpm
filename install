@@ -1,0 +1,31 @@
+#!/bin/bash
+
+JPM_REGISTRY=${JPM_REGISTRY:-https://registry.jpm.org}
+
+install() {
+  name=`echo $1 | awk -F "@" '{print $1}'`
+  version=`echo $1 | awk -F "@" '{print $2}'`
+
+  if [ -z "$version" ]
+  then
+    version=latest
+  fi
+
+  echo "Fetching $name@$version..."
+
+  if [ -z `cat jpm.txt | grep $1` ]
+  then
+    echo $1 >> jpm.txt
+  fi
+
+  if [ -z `ls -l | grep jpm_modules` ]
+  then
+    mkdir jpm_modules
+  fi
+
+  echo $JPM_REGISTRY/package/$name@$version
+
+  curl --ipv4 -X GET $JPM_REGISTRY/package/$name@$version > ./jpm_modules/$name/$name.groovy
+}
+
+install $1

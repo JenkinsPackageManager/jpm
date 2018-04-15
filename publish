@@ -1,0 +1,27 @@
+#!/bin/bash
+
+JPM_REGISTRY=${JPM_REGISTRY:-https://registry.jpm.org}
+
+publish() {
+  name=`echo $1 | awk -F "@" '{print $1}'`
+  version=`echo $1 | awk -F "@" '{print $2}'`
+
+  if [ -z "$version" ]
+  then
+    echo "Missing version"
+    exit 1
+  fi
+
+  echo "Publishing $name@$version..."
+
+  zip -rj pkg.zip $(realpath `dirname withNvm.groovy`)
+
+  curl --ipv4 -X POST \
+    -H 'content-type: multipart/form-data' \
+    -F file=@`realpath pkg.zip` \
+    $JPM_REGISTRY/package/$name@$version
+
+  rm pkg.zip
+}
+
+publish $1
