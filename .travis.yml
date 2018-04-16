@@ -10,4 +10,12 @@ install:
 script:
 - go install ./...
 - gox -output="bin/{{.Dir}}_{{.OS}}_{{.Arch}}" ./...
-- ls -al bin
+
+deploy:
+  provider: releases
+  api_key: "GITHUB OAUTH TOKEN"
+  file_glob: true
+  file: bin/**/*
+  skip_cleanup: true
+  on:
+    tags: true
