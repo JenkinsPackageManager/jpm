@@ -3,6 +3,10 @@ language: go
 go:
 - "1.10"
 
+install:
+- go get github.com/mitchellh/gox
+
 script:
 - cd util; go install; cd ..
 - cd cmd/jpm; go install; cd ../..
+- gox ./...
